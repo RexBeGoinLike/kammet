@@ -31,7 +31,7 @@ function GenerateStoreItemList() {
     const [quantities, setQuantities] = useState({});
     const { id } = useParams();
 
-    const { cart, addToCart, isCartOpen, openCart, closeCart } = useCart();
+    const { cart, addToCart, isCartOpen, openCart, closeCart, updateCartQuantity } = useCart();
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -72,11 +72,19 @@ function GenerateStoreItemList() {
                             </ItemMedia> 
                             <ItemContent> 
                                 <ItemTitle>{cartItem.title}</ItemTitle> 
-                                <ItemDescription>Php {cartItem.price} * {(quantities[cartItem.id] || 1)}</ItemDescription>
-                                <ItemDescription>Total: Php {cartItem.price * (quantities[cartItem.id] || 1)}</ItemDescription>
+                                <ItemDescription>Php {cartItem.price}</ItemDescription>
                             </ItemContent>
                             <ItemActions>
-                                <ChangeQuantity item={cartItem} quantities={quantities} updateQuantity={updateQuantity} />
+                                <Button variant="outline" size="icon" aria-label="Subtract" onClick={() => 
+                                    updateCartQuantity(cartItem.id, cartItem.quantity - 1) }>
+                                    <Minus />
+                                </Button>
+                                <Input className="w-10 no-arrows" type="number" min="1" value={cartItem.quantity} 
+                                    onChange={(e) => updateCartQuantity(cartItem.id, e.target.value)}/>
+                                <Button variant="outline" size="icon" aria-label="Add" onClick={() =>
+                                    updateCartQuantity(cartItem.id, cartItem.quantity + 1)}>
+                                    <Plus />
+                                </Button>
                             </ItemActions>
                         </Item>
                     ))}
@@ -95,12 +103,22 @@ function GenerateStoreItemList() {
                             <ItemDescription>Php {item.price}</ItemDescription>
                         </ItemContent> 
                         <ItemActions>
-                            <ChangeQuantity item={item} quantities={quantities} updateQuantity={updateQuantity} />
+                            <Button variant="outline" size="icon" aria-label="Subtract" onClick={() => {
+                                updateQuantity(item.id, (quantities[item.id] || 1) - 1);
+                            }}>
+                                <Minus />
+                            </Button>
+                            <Input className="w-10 no-arrows" type="number" min="1" value={quantities[item.id] || 1} onChange={(e) => updateQuantity(item.id, e.target.value)}/>
+                            <Button variant="outline" size="icon" aria-label="Add" onClick={() => {
+                                    updateQuantity(item.id, (quantities[item.id] || 1) + 1);
+                            }}>
+                                <Plus />
+                            </Button>
                             <Button onClick={() => {
                                 addToCart(item, quantities[item.id] || 1);
+                                delete quantities[item.id];
                                 openCart();
-                            }}
-                            >Add to Cart</Button>
+                            }}>Add to Cart</Button>
                         </ItemActions>
                     </Item>
                 ))}
@@ -109,20 +127,3 @@ function GenerateStoreItemList() {
     );
 }
 
-function ChangeQuantity(props) {
-    const { item, quantities, updateQuantity } = props;
-    return (<>
-        <Button variant="outline" size="icon" aria-label="Subtract" onClick={() => {
-                updateQuantity(item.id, (quantities[item.id] || 1) - 1);
-        }}>
-            <Minus />
-        </Button>
-        <Input className="w-10 no-arrows" type="number" min="1" value={quantities[item.id] || 1} onChange={(e) => updateQuantity(item.id, e.target.value)}
-        />
-        <Button variant="outline" size="icon" aria-label="Add" onClick={() => {
-                updateQuantity(item.id, (quantities[item.id] || 1) + 1);
-        }}>
-            <Plus />
-        </Button>
-    </>);
-}

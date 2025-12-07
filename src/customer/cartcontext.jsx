@@ -9,15 +9,29 @@ export function CartProvider({ children }) {
   const addToCart = (item, quantity) => {
     setCart(prev => ({
       ...prev,
-      [item.id]: { ...item, quantity }
+      [item.id]: { ...item, quantity: (prev[item.id]?.quantity || 0) + quantity }
     }));
+  };
+
+  const updateCartQuantity = (id, value) => {
+    setCart(prevCart => {
+      const newCart = { ...prevCart };
+
+      if (value < 1) {
+        delete newCart[id];
+      } else {
+        newCart[id] = { ...newCart[id], quantity: value }; 
+      }
+
+      return newCart;
+    });
   };
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, isCartOpen, openCart, closeCart }}>
+    <CartContext.Provider value={{ cart, addToCart, isCartOpen, openCart, closeCart, updateCartQuantity }}>
       {children}
     </CartContext.Provider>
   );

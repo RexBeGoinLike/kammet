@@ -9,15 +9,15 @@ import {
   ItemMedia,
   ItemTitle,
 } from "./../components/ui/item"
+import {MapPin} from "lucide-react";
 
 let cart = [];
 
 export function Home() {
   return (
-    <>
-      <h1> Store List </h1>
+    <div className="p-4">
       <StoreList />
-    </>
+    </div>
   );
 }
 
@@ -33,16 +33,18 @@ function StoreList() {
   }, []);
 
   return (
-    <div>
+    <>
       {stores.map(store => (
-        <div
-          key={store.id}
-          onClick={() => navigate(`/store/${store.id}`)}
-        >
-          <h3>{store.name}</h3>
-          <p>{store.location}</p>
-        </div>
+        <Item variant="outline" className="w-fit" key={store.id} onClick={() => navigate(`/store/${store.id}`)}>
+          <ItemHeader>
+            <img src={store.thumbnail} alt={store.name} className="w-100 h-75 aspect-square w-full rounded-sm object-cover"/>
+          </ItemHeader>
+          <ItemContent>
+            <ItemTitle>{store.name}</ItemTitle>
+            <ItemDescription className="flex"><MapPin />{store.location}</ItemDescription>
+          </ItemContent>
+        </Item>
       ))}
-    </div>
+    </>
   );
 }
