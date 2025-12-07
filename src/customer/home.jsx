@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+let cart = [];
+
 export function Home() {
   return (
     <>

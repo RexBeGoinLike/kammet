@@ -5,6 +5,7 @@ export const handler = async (event) => {
   const { id } = event.queryStringParameters
 
   try {
+    
     const result = await sql(`SELECT * FROM FOODITEM WHERE storeid = ${id}`);
 
     return {

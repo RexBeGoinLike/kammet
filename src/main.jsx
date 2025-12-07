@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import { Login } from './login.jsx'
 import { Home } from './customer/home.jsx'
 import { StoreItemList } from './customer/storeitemlist.jsx';
-
-
+import { CartProvider } from './customer/cartcontext.jsx';
+import './index.css';
+import { Car } from 'lucide-react';
 
 function App(){
   return (
@@ -19,5 +20,7 @@ function App(){
 }
 
 createRoot(document.getElementById('root')).render(
-  <App />
+  <CartProvider>
+    <App />
+  </CartProvider>
 );
