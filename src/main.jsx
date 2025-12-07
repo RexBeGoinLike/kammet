@@ -1,9 +1,9 @@
 import { createRoot } from 'react-dom/client';
-import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { user, signIn, signOut } from './dataaccess/usermanager.js'
-import { Login } from '../login.jsx'
+import { Login } from './login.jsx'
 import { Home } from './customer/home.jsx'
+import { StoreItemList } from './customer/storeitemlist.jsx';
+
 
 
 function App(){
@@ -12,6 +12,7 @@ function App(){
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/store/:id" element={<StoreItemList />} />
       </Routes>
     </Router>
   );

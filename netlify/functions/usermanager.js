@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from './firebase'
+import { auth } from '../../src/dataaccess/firebase'
 
 export let user;
 export async function signIn(e, email, password){

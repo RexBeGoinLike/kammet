@@ -1,19 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { user } from '../dataaccess/usermanager.js'
-import { fetchStoreList } from '../dataaccess/storelistmanager.js';
 
 export function Home() {
-  const navigate = useNavigate();
-
   return (
     <>
-      <h1> Hello {user.email} </h1>
-      <nav>
-         <input
-            type="text" 
-          />
-      </nav>
+      <h1> Store List </h1>
       <StoreList />
     </>
   );
@@ -24,11 +15,10 @@ function StoreList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function getData() {
-      const data = await fetchStoreList();
-      setStores(data);
-    }
-    getData();
+    fetch("/.netlify/functions/getStoreList")
+      .then((res) => res.json())
+      .then((data) => setStores(data))
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -44,5 +34,4 @@ function StoreList() {
       ))}
     </div>
   );
-
 }

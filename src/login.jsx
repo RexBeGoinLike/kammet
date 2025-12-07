@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { user, signIn } from './src/dataaccess/usermanager.js'
+import { signIn } from '../netlify/functions/usermanager.js'
 
 
 export function Login() {
