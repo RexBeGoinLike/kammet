@@ -33,11 +33,11 @@ function StoreList() {
   }, []);
 
   return (
-    <>
+    <div className="flex justify-center">
       {stores.map(store => (
         <Item variant="outline" className="w-fit" key={store.id} onClick={() => navigate(`/store/${store.id}`)}>
           <ItemHeader>
-            <img src={store.thumbnail} alt={store.name} className="w-100 h-75 aspect-square w-full rounded-sm object-cover"/>
+            <img src={store.thumbnail} alt={store.name} className="h-75 aspect-square w-full rounded-sm object-cover object-top"/>
           </ItemHeader>
           <ItemContent>
             <ItemTitle>{store.name}</ItemTitle>
@@ -45,6 +45,6 @@ function StoreList() {
           </ItemContent>
         </Item>
       ))}
-    </>
+    </div>
   );
 }

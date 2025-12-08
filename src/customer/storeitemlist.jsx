@@ -14,12 +14,14 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
+  ItemFooter,
   ItemHeader,
   ItemMedia,
   ItemTitle,
 } from "./../components/ui/item"
 import { Button } from "./../components/ui/button";
 import { Input } from "./../components/ui/input";
+import { Separator} from "./../components/ui/separator";
 
 export function StoreItemList() {
   return <GenerateStoreItemList/>;
@@ -56,46 +58,61 @@ function GenerateStoreItemList() {
                     <ShoppingCart />({Object.keys(cart).length})
                 </Button>
             </div>
-
+            
             <Dialog open={isCartOpen} onOpenChange={closeCart}>
                 <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Cart</DialogTitle>
-                    <DialogDescription>Your Items</DialogDescription>
-                </DialogHeader>
+                    <DialogHeader>
+                        <DialogTitle>Cart</DialogTitle>
+                    </DialogHeader>
 
-                <div className="flex w-full max-w-md flex-col gap-6"> 
-                    {(Object.values(cart).map(cartItem => 
-                        <Item key={cartItem.id} variant="outline"> 
-                            <ItemMedia> 
-                                <img src={cartItem.thumbnail} alt={cartItem.title} className="w-24 h-auto object-cover rounded-md" /> 
-                            </ItemMedia> 
-                            <ItemContent> 
-                                <ItemTitle>{cartItem.title}</ItemTitle> 
-                                <ItemDescription>Php {cartItem.price}</ItemDescription>
-                            </ItemContent>
-                            <ItemActions>
-                                <Button variant="outline" size="icon" aria-label="Subtract" onClick={() => 
-                                    updateCartQuantity(cartItem.id, cartItem.quantity - 1) }>
-                                    <Minus />
-                                </Button>
-                                <Input className="w-10 no-arrows" type="number" min="1" value={cartItem.quantity} 
-                                    onChange={(e) => updateCartQuantity(cartItem.id, e.target.value)}/>
-                                <Button variant="outline" size="icon" aria-label="Add" onClick={() =>
-                                    updateCartQuantity(cartItem.id, cartItem.quantity + 1)}>
-                                    <Plus />
-                                </Button>
-                            </ItemActions>
-                        </Item>
-                    ))}
-                </div>
+                    {(Object.keys(cart).length > 0 ) ? (
+                        <div className="flex w-full max-w-md flex-col gap-6"> 
+                            {(Object.values(cart).map(cartItem => 
+                                <Item key={cartItem.id} variant="outline"> 
+                                    <ItemMedia> 
+                                        <img src={cartItem.thumbnail} alt={cartItem.title} className="w-24 h-auto object-cover rounded-md" /> 
+                                    </ItemMedia> 
+                                    <ItemContent> 
+                                        <ItemTitle>{cartItem.title}</ItemTitle> 
+                                        <ItemDescription>Php {cartItem.price}</ItemDescription>
+                                        <ItemDescription>Subtotal: Php {cartItem.price * cartItem.quantity}</ItemDescription>
+                                    </ItemContent>
+                                    <ItemActions>
+                                        <Button variant="outline" size="icon" aria-label="Subtract" onClick={() => 
+                                            updateCartQuantity(cartItem.id, cartItem.quantity - 1) }>
+                                            <Minus />
+                                        </Button>
+                                        <Input className="w-10 no-arrows" type="number" min="1" value={cartItem.quantity} 
+                                            onChange={(e) => updateCartQuantity(cartItem.id, e.target.value)}/>
+                                        <Button variant="outline" size="icon" aria-label="Add" onClick={() =>
+                                            updateCartQuantity(cartItem.id, cartItem.quantity + 1)}>
+                                            <Plus />
+                                        </Button>
+                                    </ItemActions>
+                                </Item>
+                            ))}
+                            <Separator />
+                            <ItemFooter>
+                                Total: Php {(Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0 ))}
+                            </ItemFooter>
+                            <Separator />
+                            <Button className="mt-2 w-full" onClick={() => navigate(`/checkout/${id}`)}>Checkout</Button>
+                        </div>
+                    ) : ( 
+                        <div className="flex flex-col items-center" >
+                            <DialogTitle>Your cart is empty.</DialogTitle> 
+                            <DialogDescription>Add items to your cart to see them here.</DialogDescription>
+                        </div>
+                    )}
+
                 </DialogContent>
             </Dialog>
+
             <div className="flex flex-col gap-4">
                 {items.map(item => (
                     <Item key={item.id} variant="outline"> 
                         <ItemMedia> 
-                            <img src={item.thumbnail} alt={item.title} className="w-24 h-auto object-cover rounded-md" /> 
+                            <img src={item.thumbnail} alt={item.title} className="w-32 h-auto object-cover rounded-md" /> 
                         </ItemMedia>
                         <ItemContent> 
                             <ItemTitle>{item.title}</ItemTitle> 

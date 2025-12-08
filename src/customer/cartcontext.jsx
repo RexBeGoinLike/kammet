@@ -22,7 +22,6 @@ export function CartProvider({ children }) {
       } else {
         newCart[id] = { ...newCart[id], quantity: value }; 
       }
-
       return newCart;
     });
   };
