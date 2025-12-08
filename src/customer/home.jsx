@@ -87,7 +87,7 @@ function StoreList() {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" >
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger variant="none" size="icon  " className="flex mb-4 p-0 self-start justify-start items-center">
@@ -98,7 +98,7 @@ function StoreList() {
           <DialogHeader>
             <DialogTitle>Order History</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 max-h-[80vh] overflow-y-auto pr-1">
 
             {orderhistory.map((order) => (
               <Item variant="outline" className="w-full" key={order.id}>
