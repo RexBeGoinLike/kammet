@@ -63,11 +63,12 @@ export function Checkout() {
     }
 
     return (
-        <div className="flex justify-center p-4">
+        <div className="flex justify-center p-4 overflow-auto">
             <Card className="w-lg">
                 <CardHeader>
-                    <Button variant="none" className="p-0 flex justify-start" size="icon" onClick={() => navigate(`/store/${id}`)}>
-                        <ArrowLeft />
+                    <Button variant="none" className="p-0 flex justify-start items-center" size="icon" onClick={() => navigate(`/store/${id}`)}>
+                        <ArrowLeft className="h-4 w-4 mr-2" />
+                        Back to Store
                     </Button>
                     <CardTitle>Checkout</CardTitle>
                     <CardDescription>Review your order before proceeding to payment.</CardDescription>
@@ -89,6 +90,7 @@ export function Checkout() {
                     </p>
                     <form onSubmit={(e) => {
                         e.preventDefault();
+                        alert("Order Placed!");
                         sendCart();
                     }}>
                         <FieldSet>

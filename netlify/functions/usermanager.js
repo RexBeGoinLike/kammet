@@ -1,26 +1,16 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../src/dataaccess/firebase'
 
-let user;
 
-export async function signIn(e, email, password){
+export async function signIn(e, email, password) {
   e.preventDefault();
-  await signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      user = auth.currentUser;
-      return user;
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      throw error;
-    });
+  await signInWithEmailAndPassword(auth, email, password);
 }
 
-export function getUser () {
-  return user;
+export function getUser() {
+  return auth.currentUser;
 }
 
-export async function signOut(){
+export async function signOut() {
   await signOut(auth);
 }

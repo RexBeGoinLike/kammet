@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemHeader,
-  ItemMedia,
-  ItemTitle,
-} from "./../components/ui/item"
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -29,7 +20,7 @@ import {
 } from "./../components/ui/item"
 import { Button } from './../components/ui/button';
 import { MapPin, History } from "lucide-react";
-import { auth } from '@/dataaccess/firebase';
+import { auth } from './../dataaccess/firebase';
 
 let cart = [];
 
@@ -43,10 +34,11 @@ export function Home() {
 
 function StoreList() {
   const [stores, setStores] = useState([]);
+  const [orderhistory, setOrderHistory] = useState([]);
+
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const [orderhistory, setOrderHistory] = useState(null);
 
   useEffect(() => {
     fetch("/.netlify/functions/getStoreList")
@@ -62,27 +54,64 @@ function StoreList() {
   }, [open]);
 
   async function getHistory() {
-    const res = await fetch(`/.netlify/functions/getStoreList?id=${auth.currentUser.uid}`)
+    const res = await fetch(`/.netlify/functions/getOrderHistory?id=${auth.currentUser.uid}`)
       .then((res) => res.json())
       .then((data) => setOrderHistory(data))
       .catch((err) => console.error(err));
   }
 
+  async function cancelOrder(orderId) {
+      const confirmCancel = window.confirm("Are you sure you want to cancel this order?");
+      
+      if (!confirmCancel) return;
+
+      fetch('/.netlify/functions/cancelOrder', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          orderId: orderId,
+          userId: auth.currentUser.uid
+      }),
+      })
+      .then(res => res.json())
+      .then(data => {
+          alert("Order cancelled successfully");
+          getHistory();
+      })
+      .catch(err => {
+          console.error("Error cancelling order:", err);
+          alert("Failed to cancel order");
+      });
+  }
+
   return (
     <div className="flex flex-col items-center">
-      
+
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger variant="outline" className="mb-4 self-end">
-              <History/> 
+        <DialogTrigger variant="none" size="icon  " className="flex mb-4 p-0 self-start justify-start items-center">
+              <History className="h-4 w-4 mr-2"/> 
+              Order History
           </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Order History</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-2">
-            {orderhistory.map((order) => (
-              <Item variant="outline" className="w-fit" key={order.id}>
 
+            {orderhistory.map((order) => (
+              <Item variant="outline" className="w-full" key={order.id}>
+                  <ItemContent>
+                    <ItemTitle>Order #{order.id}</ItemTitle>
+                    <ItemDescription className="flex">Location: {order.location}</ItemDescription>
+                    <ItemDescription className="flex">Payment Method: {order.paymentmethod}</ItemDescription>
+                    <ItemDescription className="flex">Total: Php {order.total}</ItemDescription>
+                    <ItemDescription className="flex">Status: {order.status}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <Button variant="outline" disabled={order.status != "Pending"} onClick={() => cancelOrder(order.id)}>Cancel</Button>
+                  </ItemActions>
               </Item>
             ))}
           </div>
