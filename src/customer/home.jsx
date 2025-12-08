@@ -9,7 +9,27 @@ import {
   ItemMedia,
   ItemTitle,
 } from "./../components/ui/item"
-import {MapPin} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./../components/ui/dialog"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemHeader,
+  ItemMedia,
+  ItemTitle,
+} from "./../components/ui/item"
+import { Button } from './../components/ui/button';
+import { MapPin, History } from "lucide-react";
+import { auth } from '@/dataaccess/firebase';
 
 let cart = [];
 
@@ -25,6 +45,9 @@ function StoreList() {
   const [stores, setStores] = useState([]);
   const navigate = useNavigate();
 
+  const [open, setOpen] = useState(false);
+  const [orderhistory, setOrderHistory] = useState(null);
+
   useEffect(() => {
     fetch("/.netlify/functions/getStoreList")
       .then((res) => res.json())
@@ -32,8 +55,40 @@ function StoreList() {
       .catch((err) => console.error(err));
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      getHistory();
+    }
+  }, [open]);
+
+  async function getHistory() {
+    const res = await fetch(`/.netlify/functions/getStoreList?id=${auth.currentUser.uid}`)
+      .then((res) => res.json())
+      .then((data) => setOrderHistory(data))
+      .catch((err) => console.error(err));
+  }
+
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center">
+      
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger variant="outline" className="mb-4 self-end">
+              <History/> 
+          </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Order History</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-2">
+            {orderhistory.map((order) => (
+              <Item variant="outline" className="w-fit" key={order.id}>
+
+              </Item>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {stores.map(store => (
         <Item variant="outline" className="w-fit" key={store.id} onClick={() => navigate(`/store/${store.id}`)}>
           <ItemHeader>

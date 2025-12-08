@@ -23,10 +23,11 @@ import { Textarea } from "./../components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { auth } from "./../dataaccess/firebase.js";
 
 
 export function Checkout() {
-    const { cart } = useCart();
+    const { cart, clearCart } = useCart();
     const { id } = useParams();
     
     const [ location, setLocation ] = useState("");
@@ -34,6 +35,33 @@ export function Checkout() {
     const [ method, setMethod ] = useState("Cash on Delivery");
 
     const navigate = useNavigate();
+
+    async function sendCart() {
+        try {
+            const response = await fetch("/.netlify/functions/addOrder", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    items: Object.values(cart),
+                    instructions: instructions,
+                    location: location,
+                    method: method,   
+                    storeid: id,    
+                    userid: auth.currentUser.uid,
+                }),
+            });
+            
+            navigate("/home");
+            const data = await response.json();
+            console.log("Server response:", data);
+            clearCart();
+        } catch (err) {
+            console.error("Error sending cart:", err);
+        }
+    }
+
     return (
         <div className="flex justify-center p-4">
             <Card className="w-lg">
@@ -61,7 +89,7 @@ export function Checkout() {
                     </p>
                     <form onSubmit={(e) => {
                         e.preventDefault();
-                        console.log(method, location, instructions);
+                        sendCart();
                     }}>
                         <FieldSet>
                             <FieldGroup>

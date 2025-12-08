@@ -1,7 +1,8 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../src/dataaccess/firebase'
 
-export let user;
+let user;
+
 export async function signIn(e, email, password){
   e.preventDefault();
   await signInWithEmailAndPassword(auth, email, password)
@@ -14,6 +15,10 @@ export async function signIn(e, email, password){
       const errorMessage = error.message;
       throw error;
     });
+}
+
+export function getUser () {
+  return user;
 }
 
 export async function signOut(){

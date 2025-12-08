@@ -26,11 +26,15 @@ export function CartProvider({ children }) {
     });
   };
 
+  const clearCart = () => {
+    setCart({});
+  }
+
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, isCartOpen, openCart, closeCart, updateCartQuantity }}>
+    <CartContext.Provider value={{ cart, addToCart, isCartOpen, openCart, closeCart, updateCartQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );
